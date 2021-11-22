@@ -1,10 +1,9 @@
 package io.github.brushup.decksservice;
 
-import java.nio.file.Path;
+import com.datastax.oss.driver.api.core.CqlSession;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.cassandra.CqlSessionBuilderCustomizer;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
@@ -19,10 +18,16 @@ public class DecksServiceApplication {
 	}
 
 	@Bean
-    public CqlSessionBuilderCustomizer sessionBuilderCustomizer(DataStaxAstraProperties astraProperties) {
-        Path bundle = astraProperties.getSecureConnectBundle().toPath();
-        return builder -> builder.withCloudSecureConnectBundle(bundle);
-    }
-		
+	public CqlSession connectToAstra(DataStaxAstraProperties astraProperties) {
+
+		CqlSession cqlSession = CqlSession.builder()
+				.withCloudSecureConnectBundle(astraProperties.getSecureConnectBundle().toPath())
+				.withAuthCredentials(astraProperties.getUsername(),
+						astraProperties.getPassword())
+				.withKeyspace(astraProperties.getKeyspace())
+				.build();
+
+		return cqlSession;
+	}
 
 }

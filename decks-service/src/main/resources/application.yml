@@ -5,24 +5,14 @@ output:
   ansi:
     enabled: always
 
-spring:
-  data:
-    cassandra:
-      keyspace-name: <keyspace>
-      username: <client-id>
-      password: <client-secret>
-      schema-action: create-if-not-exists
-      request:
-        timeout: 10s
-      connection:
-        connect-timeout: 10s
-        init-query-timeout: 10s
-
-datastax.astra:
+astra:
   secure-connect-bundle: secure-connect-bundle.zip
-
-astra.db:
-  id: <db-id> 
-  region: <db-region>
+  username: <client-id>
+  password: <client-secret>
   keyspace: <keyspace>
-  application.token: <token>         
+  schema-action: create-if-not-exists
+  request:
+      timeout: 10s
+  connection:
+    connect-timeout: 10s
+    init-query-timeout: 10s    
