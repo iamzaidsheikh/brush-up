@@ -1,0 +1,6 @@
+server:
+  port: 8081
+
+output:
+  ansi:
+    enabled: always     
