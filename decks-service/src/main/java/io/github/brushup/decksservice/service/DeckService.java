@@ -56,7 +56,7 @@ public class DeckService {
     }
     
     //TODO : Change this to return a UUID
-    public boolean deleteCardFromDeck(UUID deckId, Card card) {
+    public boolean removeCardFromDeck(UUID deckId, Card card) {
         Optional<Deck> optionalDeck = findDeckById(deckId);
         if(optionalDeck.isPresent()) {
             Deck deck = optionalDeck.get();
@@ -64,6 +64,7 @@ public class DeckService {
             if(cards.contains(card)) {
                 cards.remove(card);
                 deck.setNumCards(deck.getNumCards() - 1);
+                updateDeck(deck);
             }
             
             return true;

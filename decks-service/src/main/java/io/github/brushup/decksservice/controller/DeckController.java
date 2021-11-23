@@ -7,6 +7,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -66,6 +67,22 @@ public class DeckController {
         return ResponseEntity.created(location).body(card.getId());
         }else {
             log.error("Error adding Card: {} to Deck: {}", card.getId(), deckId);
+
+            //TODO: Return a better error response
+            return ResponseEntity.notFound().build();
+        }
+        
+    }
+
+    @DeleteMapping("/remove/{deckId}")
+    public ResponseEntity<UUID> removeCardFromDeck(@PathVariable UUID deckId, @RequestBody Card card) {
+        Boolean isCardRemoved = deckService.removeCardFromDeck(deckId, card);
+        if(isCardRemoved){    
+        log.info("Card: {} removed from Deck: {}", card.getId(), deckId);
+                
+        return ResponseEntity.ok().body(deckId);
+        }else {
+            log.error("Error removing Card: {} from Deck: {}", card.getId(), deckId);
 
             //TODO: Return a better error response
             return ResponseEntity.notFound().build();
