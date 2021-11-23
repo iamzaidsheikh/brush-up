@@ -24,6 +24,12 @@ public class DeckService {
         return deck.getId();
     }
 
+    public UUID updateDeck(Deck deck) {
+        deckDao.update(deck);
+        
+        return deck.getId();
+    }
+
     public Optional<Deck> findDeckById(UUID id) {
         return deckDao.findById(id);
     }
@@ -37,6 +43,7 @@ public class DeckService {
             if(!cards.contains(card)) {
                 cards.add(card);
                 deck.setNumCards(deck.getNumCards() + 1);
+                updateDeck(deck);
             }
             if(!cardService.findCardById(card.getId()).isPresent()) {
                 cardService.createCard(card);

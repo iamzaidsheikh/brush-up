@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import io.github.brushup.decksservice.entity.Card;
 import io.github.brushup.decksservice.entity.Deck;
 import io.github.brushup.decksservice.service.DeckService;
 import lombok.RequiredArgsConstructor;
@@ -50,5 +51,25 @@ public class DeckController {
         log.info("Deck: {} created", deckId);
                 
         return ResponseEntity.created(location).body(deckId);
+    }
+
+    @PostMapping("/add/{deckId}")
+    public ResponseEntity<UUID> addCardToDeck(@PathVariable UUID deckId, @RequestBody Card card, HttpServletRequest request) {
+        Boolean isCardAdded = deckService.addCardToDeck(deckId, card);
+        if(isCardAdded){
+            URI location = ServletUriComponentsBuilder.fromRequestUri(request)
+                .replacePath("/add/{deckId}/" + card.getId().toString())
+                .buildAndExpand(card.getId())
+                .toUri();
+        log.info("Card: {} added to Deck: {}", card.getId(), deckId);
+                
+        return ResponseEntity.created(location).body(card.getId());
+        }else {
+            log.error("Error adding Card: {} to Deck: {}", card.getId(), deckId);
+
+            //TODO: Return a better error response
+            return ResponseEntity.notFound().build();
+        }
+        
     }
 }

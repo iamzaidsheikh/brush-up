@@ -7,6 +7,7 @@ import com.datastax.oss.driver.api.mapper.annotations.Dao;
 import com.datastax.oss.driver.api.mapper.annotations.Delete;
 import com.datastax.oss.driver.api.mapper.annotations.Insert;
 import com.datastax.oss.driver.api.mapper.annotations.Select;
+import com.datastax.oss.driver.api.mapper.annotations.Update;
 
 import io.github.brushup.decksservice.entity.Deck;
 
@@ -18,6 +19,9 @@ public interface DeckDao {
 
     @Insert
     void save(Deck deck);
+
+    @Update
+    void update(Deck deck);
 
     @Delete
     void delete(Deck deck);
