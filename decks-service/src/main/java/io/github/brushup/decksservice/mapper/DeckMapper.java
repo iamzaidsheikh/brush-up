@@ -1,4 +1,4 @@
-package io.github.brushup.decksservice;
+package io.github.brushup.decksservice.mapper;
 
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.mapper.MapperBuilder;
