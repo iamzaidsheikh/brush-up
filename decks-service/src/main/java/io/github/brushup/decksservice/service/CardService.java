@@ -1,8 +1,7 @@
 package io.github.brushup.decksservice.service;
 
+import java.util.Optional;
 import java.util.UUID;
-
-import com.datastax.oss.driver.shaded.guava.common.base.Optional;
 
 import org.springframework.stereotype.Service;
 
