@@ -10,6 +10,10 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 
 import io.github.brushup.decksservice.connection.DataStaxAstraProperties;
+import io.github.brushup.decksservice.dao.CardDao;
+import io.github.brushup.decksservice.dao.DeckDao;
+import io.github.brushup.decksservice.mapper.DeckMapper;
+import io.github.brushup.decksservice.mapper.DeckMapperBuilder;
 import io.github.brushup.decksservice.utils.CqlFileUtils;
 
 @SpringBootApplication
@@ -48,27 +52,14 @@ public class DecksServiceApplication {
 		return new DeckMapperBuilder(session).build();
 	}
 
-	// @Bean
-	// CommandLineRunner run(DeckMapper deckMapper) {
-	// 	return args -> {
-			
-	// 		Card card = new Card();
-	// 		card.setId(UUID.randomUUID());
-	// 		card.setFront("This text is in front");
-	// 		card.setBack("This text in the back");
+	@Bean
+	public DeckDao getDeckDao(DeckMapper deckMapper) {
+		return deckMapper.deckDao();
+	}
 
-	// 		CardDao cardDao = deckMapper.cardDao();
-	// 		cardDao.save(card);
+	@Bean
+	public CardDao getCardDao(DeckMapper deckMapper) {
+		return deckMapper.cardDao();
+	}
 
-	// 		Deck deck = new Deck();
-	// 		deck.setId(UUID.randomUUID());
-	// 		deck.setNumCards(1);
-	// 		List<Card> cards = new ArrayList<>();
-	// 		cards.add(card);
-	// 		deck.setCards(cards);
-
-	// 		DeckDao deckDao = deckMapper.deckDao();
-	// 		deckDao.save(deck);
-	// 	};
-	// }
 }
