@@ -1,6 +1,10 @@
 server:
   port: 8081
 
+spring:
+  application:
+    name: decks-service
+
 output:
   ansi:
     enabled: always
@@ -9,10 +13,4 @@ astra:
   secure-connect-bundle: secure-connect-bundle.zip
   username: <client-id>
   password: <client-secret>
-  keyspace: <keyspace>
-  schema-action: create-if-not-exists
-  request:
-      timeout: 10s
-  connection:
-    connect-timeout: 10s
-    init-query-timeout: 10s    
+  keyspace: <keyspace>    
