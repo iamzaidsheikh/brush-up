@@ -1,0 +1,17 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: registration-service
+  datasource:
+    url: <db-url>
+    username: <username>
+    password: <password>        
+  jpa:
+    hibernate: 
+      ddl-auto: create
+    properties: 
+      hibernate: 
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true  
