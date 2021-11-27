@@ -2,7 +2,6 @@ package io.github.brushup.registrationservice.models;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +12,7 @@ import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import io.github.brushup.registrationservice.validation.ValidEmail;
 import lombok.Data;
 
 @Entity
@@ -21,7 +21,7 @@ public class User {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private long id;
 
     @NotNull
     @NotEmpty
@@ -41,6 +41,7 @@ public class User {
 
     @NotNull
     @NotEmpty
+    @ValidEmail
     private String email;
 
     private boolean enabled;
