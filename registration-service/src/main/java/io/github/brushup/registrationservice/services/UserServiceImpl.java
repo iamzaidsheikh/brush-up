@@ -9,8 +9,10 @@ import io.github.brushup.registrationservice.exceptions.EmailAlreadyExistsExcept
 import io.github.brushup.registrationservice.exceptions.UsernameAlreadyExistsException;
 import io.github.brushup.registrationservice.models.Role;
 import io.github.brushup.registrationservice.models.User;
+import io.github.brushup.registrationservice.models.VerificationToken;
 import io.github.brushup.registrationservice.repositories.RoleRepo;
 import io.github.brushup.registrationservice.repositories.UserRepo;
+import io.github.brushup.registrationservice.repositories.VerificationTokenRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,6 +25,7 @@ public class UserServiceImpl implements IUserService {
     private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepo roleRepo;
+    private final VerificationTokenRepo tokenRepo;
 
     private boolean emailExists(String email) {
         return userRepo.findByEmail(email) != null;
@@ -47,6 +50,25 @@ public class UserServiceImpl implements IUserService {
         User registeredUser = userRepo.save(user);
 
         return registeredUser.getId();
+    }
+
+    @Override
+    public void createVerificationToken(User user, String token) {
+        VerificationToken myToken = new VerificationToken(token, user);
+        tokenRepo.save(myToken);
+    }
+
+    @Override
+    public VerificationToken getVerificationToken(String VerificationToken) {
+        
+        return tokenRepo.findByToken(VerificationToken);
+    }
+
+    @Override
+    public Long enableUser(User user) {
+        log.info("{} verified. Account enabled", user.getEmail());
+        user.setEnabled(true);
+        return userRepo.save(user).getId();
     }
         
 }
