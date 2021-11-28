@@ -10,8 +10,19 @@ spring:
     password: <password>        
   jpa:
     hibernate: 
-      ddl-auto: create
+      ddl-auto: update
     properties: 
       hibernate: 
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true  
+  mail:
+    host: <host>
+    port: <port>
+    username: <username>
+    password: <password>
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
