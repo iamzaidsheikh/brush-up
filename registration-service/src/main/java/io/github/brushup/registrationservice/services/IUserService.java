@@ -7,9 +7,13 @@ public interface IUserService {
     
     Long registerUser(User user);
 
+    User getUser(String token);
+
     void createVerificationToken(User user, String token);
 
     VerificationToken getVerificationToken(String VerificationToken);
 
     Long enableUser(User user);
+
+    VerificationToken generateNewVerificationToken(String existingToken);
 }

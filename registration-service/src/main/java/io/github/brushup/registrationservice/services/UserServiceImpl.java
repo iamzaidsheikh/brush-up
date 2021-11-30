@@ -1,5 +1,7 @@
 package io.github.brushup.registrationservice.services;
 
+import java.util.UUID;
+
 import javax.transaction.Transactional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,6 +36,14 @@ public class UserServiceImpl implements IUserService {
     private boolean usernameExists(String username) {
         return userRepo.findByUsername(username) != null;
     }
+
+    @Override
+    public Long enableUser(User user) {
+        log.info("{} verified. Account enabled", user.getEmail());
+        user.setEnabled(true);
+
+        return userRepo.save(user).getId();
+    } 
     
     @Override
     public Long registerUser(User user) throws UsernameAlreadyExistsException, EmailAlreadyExistsException{
@@ -65,10 +75,21 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public Long enableUser(User user) {
-        log.info("{} verified. Account enabled", user.getEmail());
-        user.setEnabled(true);
-        return userRepo.save(user).getId();
+    public VerificationToken generateNewVerificationToken(final String existingVerificationToken) {
+        VerificationToken newToken = tokenRepo.findByToken(existingVerificationToken);
+        newToken.updateToken(UUID.randomUUID()
+            .toString());
+            newToken = tokenRepo.save(newToken);
+
+        return newToken;
     }
-        
+     
+    @Override
+    public User getUser(final String verificationToken) {
+        final VerificationToken token = tokenRepo.findByToken(verificationToken);
+        if (token != null) {
+            return token.getUser();
+        }
+        return null;
+    }
 }

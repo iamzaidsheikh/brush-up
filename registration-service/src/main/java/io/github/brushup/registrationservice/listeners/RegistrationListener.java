@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import io.github.brushup.registrationservice.models.User;
 import io.github.brushup.registrationservice.services.IUserService;
+import io.github.brushup.registrationservice.utils.SendVerificationEmail;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,18 +30,13 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
         User user = event.getUser();
         String token = UUID.randomUUID().toString(); // Generating token
         userService.createVerificationToken(user, token);
-
-        String recipientAddress = user.getEmail();
-        String subject = "Confirm Registration for Brush Up";
-        String confirmationUrl = event.getAppUrl() + "/confirmRegistration?token=" + token;
-        String message = "Hey there. Welcome to Brush Up. \nClick on the following link to activate your account";
-
-        // Creating the email
-        SimpleMailMessage email = new SimpleMailMessage();
-        email.setTo(recipientAddress);
-        email.setSubject(subject);
-        email.setText(message + "\r\n" + "http://localhost:8082" + confirmationUrl);
+        SimpleMailMessage email = new SendVerificationEmail(user.getEmail(),
+                                                                "Confirm Registration for Brush Up",
+                                                                "http://localhost:8082",
+                                                                "/confirmRegistration?token=" + token, 
+                                                                "Hey there. Welcome to Brush Up. \nClick on the following link to activate your account")
+                                                                .getEmail();
         mailSender.send(email);
-        log.info("Verfication link sent to email: {}", recipientAddress);
+        log.info("Verfication link sent to email: {}", user.getEmail());
     }
 }
