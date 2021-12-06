@@ -38,7 +38,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public Long enableUser(User user) {
+    public String enableUser(User user) {
         log.info("{} verified. Account enabled", user.getEmail());
         user.setEnabled(true);
 
@@ -46,7 +46,7 @@ public class UserServiceImpl implements IUserService {
     } 
     
     @Override
-    public Long registerUser(User user) throws UsernameAlreadyExistsException, EmailAlreadyExistsException{
+    public String registerUser(User user) throws UsernameAlreadyExistsException, EmailAlreadyExistsException{
         if(emailExists(user.getEmail())) {
             throw new EmailAlreadyExistsException(user.getEmail());
         } 
@@ -83,7 +83,7 @@ public class UserServiceImpl implements IUserService {
 
         return newToken;
     }
-     
+
     @Override
     public User getUser(final String verificationToken) {
         final VerificationToken token = tokenRepo.findByToken(verificationToken);

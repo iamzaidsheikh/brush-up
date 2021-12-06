@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class RegistrationResponse {
     
-    private final long userId;
+    private final String userId;
 }

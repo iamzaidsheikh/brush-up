@@ -5,7 +5,7 @@ import io.github.brushup.registrationservice.models.VerificationToken;
 
 public interface IUserService {
     
-    Long registerUser(User user);
+    String registerUser(User user);
 
     User getUser(String token);
 
@@ -13,7 +13,7 @@ public interface IUserService {
 
     VerificationToken getVerificationToken(String VerificationToken);
 
-    Long enableUser(User user);
+    String enableUser(User user);
 
     VerificationToken generateNewVerificationToken(String existingToken);
 }

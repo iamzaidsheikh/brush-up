@@ -5,13 +5,14 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import io.github.brushup.registrationservice.validation.Password;
+import io.github.brushup.registrationservice.validation.UUID;
+import io.github.brushup.registrationservice.validation.Username;
 import io.github.brushup.registrationservice.validation.ValidEmail;
 import lombok.Data;
 
@@ -20,8 +21,10 @@ import lombok.Data;
 public class User {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    @NotEmpty
+    @NotEmpty
+    @UUID
+    private String id;
 
     @NotNull
     @NotEmpty
@@ -33,10 +36,12 @@ public class User {
 
     @NotNull
     @NotEmpty
+    @Username
     private String username;
 
     @NotNull
     @NotEmpty
+    @Password
     private String password;
 
     @NotNull

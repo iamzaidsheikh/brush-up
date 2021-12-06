@@ -1,10 +1,11 @@
 package io.github.brushup.registrationservice.models;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
+import io.github.brushup.registrationservice.validation.UUID;
 import lombok.Data;
 
 @Entity
@@ -12,9 +13,13 @@ import lombok.Data;
 public class Role {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    @NotNull
+    @NotEmpty
+    @UUID
+    private String id;
     
+    @NotNull
+    @NotEmpty
     private String roleName;
 
 }

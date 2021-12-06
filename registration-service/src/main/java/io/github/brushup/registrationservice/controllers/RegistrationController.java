@@ -42,7 +42,7 @@ public class RegistrationController {
                 .replacePath("/register")
                 .buildAndExpand(user)
                 .toUri();
-        Long id = userService.registerUser(user);
+        String id = userService.registerUser(user);
         String appUrl = request.getContextPath();
         eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, appUrl));
         RegistrationResponse response = new RegistrationResponse(id);
@@ -63,7 +63,7 @@ public class RegistrationController {
             throw new VerificationTokenExpiredException(token);
         }
 
-        Long id = userService.enableUser(user);
+        String id = userService.enableUser(user);
         RegistrationResponse response = new RegistrationResponse(id);
         return ResponseEntity.ok(response);
     }
