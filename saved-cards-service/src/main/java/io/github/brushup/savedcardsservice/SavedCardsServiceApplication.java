@@ -9,6 +9,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 
 import io.github.brushup.savedcardsservice.connection.DataStaxAstraProperties;
+import io.github.brushup.savedcardsservice.dao.SavedCardsDao;
+import io.github.brushup.savedcardsservice.mapper.SavedCardsMapper;
+import io.github.brushup.savedcardsservice.mapper.SavedCardsMapperBuilder;
 
 @SpringBootApplication
 //@EnableEurekaClient
@@ -30,6 +33,16 @@ public class SavedCardsServiceApplication {
 				.build();
 
 		return cqlSession;
+	}
+
+	@Bean
+	public SavedCardsMapper getMapper(CqlSession session) {
+		return new SavedCardsMapperBuilder(session).build();
+	}
+
+	@Bean
+	public SavedCardsDao getDao(SavedCardsMapper mapper) {
+		return mapper.savedCardsDao();
 	}
 
 }
