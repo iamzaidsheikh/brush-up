@@ -1,0 +1,13 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: cards-service
+
+astra:
+  secure-connect-bundle: secure-connect-bundle.zip
+  username: <client-id>
+  password: <client-secret>
+  keyspace: <keyspace>    
+
