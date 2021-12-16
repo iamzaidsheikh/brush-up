@@ -15,7 +15,7 @@ import javax.validation.Payload;
 @Constraint(validatedBy = UUIDValidator.class)
 @Documented
 public @interface UUID {
-    String message() default "Id provided is not a version 4 UUID";
+    String message() default "Invalid Id. Must provide a valid version 4 UUID";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

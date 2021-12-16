@@ -15,7 +15,7 @@ import javax.validation.Payload;
 @Constraint(validatedBy = FrontValidator.class)
 @Documented
 public @interface Front {
-    String message() default "Invalid front text. Only upto 30 characters are allowed";
+    String message() default "Invalid front text. Must be a non empty string with upto 30 characters";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

@@ -6,10 +6,14 @@ import javax.validation.ConstraintValidatorContext;
 public class FrontValidator implements ConstraintValidator<Front, String> {
 
     private boolean validateFront(String frontText) {
-        if(frontText.length() <= 30)
-            return true;
-        else
-            return false;    
+        if(frontText == null)
+            return false;
+        if(frontText.isBlank())
+            return false;
+        if(frontText.length() > 30)
+            return false;
+            
+        return true;    
     }
 
     @Override

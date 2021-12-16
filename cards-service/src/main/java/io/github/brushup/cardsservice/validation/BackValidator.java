@@ -6,10 +6,14 @@ import javax.validation.ConstraintValidatorContext;
 public class BackValidator implements ConstraintValidator<Back, String> {
 
     private boolean validateBack(String backText) {
-        if(backText.length() <= 140)
-            return true;
-        else
-            return false;    
+        if(backText == null)
+            return false;
+        if(backText.isBlank())
+            return false;
+        if(backText.length() > 140)
+            return false;
+        
+        return true;    
     }
 
     @Override

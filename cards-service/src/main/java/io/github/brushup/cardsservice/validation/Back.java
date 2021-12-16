@@ -15,7 +15,7 @@ import javax.validation.Payload;
 @Constraint(validatedBy = BackValidator.class)
 @Documented
 public @interface Back {
-    String message() default "Invalid back text. Only upto 140 characters are allowed";
+    String message() default "Invalid back text. Must be a non empty string with upto 140 characters";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

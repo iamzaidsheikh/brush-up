@@ -8,6 +8,8 @@ import javax.validation.ConstraintValidatorContext;
 public class UUIDValidator implements ConstraintValidator<io.github.brushup.cardsservice.validation.UUID, String> {
 
     private boolean validateUUID(String id) {
+        if(id == null)
+            return false;
         try{
             UUID.fromString(id);
             return true;
