@@ -6,6 +6,7 @@ import com.datastax.oss.driver.api.mapper.annotations.Dao;
 import com.datastax.oss.driver.api.mapper.annotations.Delete;
 import com.datastax.oss.driver.api.mapper.annotations.Insert;
 import com.datastax.oss.driver.api.mapper.annotations.Select;
+import com.datastax.oss.driver.api.mapper.annotations.Update;
 
 import io.github.brushup.cardsservice.entity.Card;
 
@@ -18,6 +19,10 @@ public interface CardDao {
     @Insert
     void save(Card card);
 
+    @Update
+    void update(Card card);
+
     @Delete
     void delete(Card card);
+
 }
