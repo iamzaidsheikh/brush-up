@@ -3,6 +3,7 @@ package io.github.brushup.savedcardsservice.entitiy;
 import java.util.List;
 
 import com.datastax.oss.driver.api.mapper.annotations.Entity;
+import com.datastax.oss.driver.api.mapper.annotations.PartitionKey;
 
 import lombok.Data;
 
@@ -10,7 +11,8 @@ import lombok.Data;
 @Data
 public class SavedCards {
     
-    private String id;
+    @PartitionKey
+    private String userId;
 
-    private List<CardUDT> cards;
+    private List<String> savedCards;
 }
