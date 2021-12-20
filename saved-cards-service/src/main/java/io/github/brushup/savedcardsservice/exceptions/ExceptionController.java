@@ -9,14 +9,20 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ExceptionController {
     
     @ExceptionHandler(value = NoSavedCardsFoundException.class)
-    public ResponseEntity<APIError> exception(NoSavedCardsFoundException e) {
+    public ResponseEntity<APIError> handle(NoSavedCardsFoundException e) {
         APIError error = new APIError(HttpStatus.NOT_FOUND, "No saved cards found", e);
         return new ResponseEntity<>(error, error.getStatus());
     }
 
     @ExceptionHandler(value = InvalidIdException.class)
-    public ResponseEntity<APIError> exception(InvalidIdException e) {
+    public ResponseEntity<APIError> handle(InvalidIdException e) {
         APIError error = new APIError(HttpStatus.BAD_REQUEST, "Invalid Id", e);
+        return new ResponseEntity<>(error, error.getStatus());
+    }
+
+    @ExceptionHandler(value = EmptyListException.class)
+    public ResponseEntity<APIError> handle(EmptyListException e) {
+        APIError error = new APIError(HttpStatus.BAD_REQUEST, "List of card ids cannot be empty", e);
         return new ResponseEntity<>(error, error.getStatus());
     }
 }
