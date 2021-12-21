@@ -55,7 +55,7 @@ public class CardServiceImpl implements ICardService {
             newCard.setBack(card.getBack());
             newCard.setDateCreated(Instant.now());
             newCard.setNumSaves(0);
-            newCard.setSavedBy(new ArrayList<UserUDT>());
+            newCard.setSavedBy(new ArrayList<String>());
             dao.save(newCard);
             cardIds.add(newCard.getId());
             log.info("Card {} saved", newCard.getId());
@@ -80,5 +80,21 @@ public class CardServiceImpl implements ICardService {
         log.info("Card {} updated", card.getId());
 
         return card.getId();
+    }
+
+    @Override
+    public String addUserId(String userId, String cardId) {
+        Card card = getCard(cardId);
+        List<String> savedBy = card.getSavedBy();
+        if(!savedBy.contains(userId)) {
+            savedBy.add(userId);
+            card.setNumSaves(card.getNumSaves()+1);
+            dao.update(card);
+            log.info("Card {} saved by user {}", cardId, userId);
+        }else {
+            log.info("Card {} already saved by user {}", cardId, userId);
+        }
+
+        return cardId;
     }
 }

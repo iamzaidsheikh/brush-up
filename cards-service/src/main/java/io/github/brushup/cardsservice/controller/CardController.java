@@ -1,5 +1,6 @@
 package io.github.brushup.cardsservice.controller;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -17,13 +18,15 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import io.github.brushup.cardsservice.entity.Card;
 import io.github.brushup.cardsservice.exception.InvalidIdException;
+import io.github.brushup.cardsservice.exception.MissingUserIdHeaderException;
 import io.github.brushup.cardsservice.service.ICardService;
 import io.github.brushup.cardsservice.utils.SaveCard;
 import io.github.brushup.cardsservice.utils.GetCardResponseBody;
-import io.github.brushup.cardsservice.utils.IdResponseBody;
+import io.github.brushup.cardsservice.utils.ResourceId;
 import io.github.brushup.cardsservice.utils.UpdateCard;
 import lombok.RequiredArgsConstructor;
 
@@ -63,27 +66,58 @@ public class CardController {
     }
 
     @PostMapping()
-    public ResponseEntity<List<IdResponseBody>> saveCards(
+    public ResponseEntity<List<ResourceId>> saveCards(
             @RequestBody @NotEmpty(message = "List of cards cannot be empty.") List<@Valid SaveCard> cards,
             HttpServletRequest request) {
         String userId = request.getHeader("userId");
         List<String> cardIds = cardService.saveCards(cards, userId);
-        List<IdResponseBody> body = new ArrayList<>();
-        cardIds.stream().forEach(cardId -> {
-            body.add(new IdResponseBody(cardId));
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(cardIds.get(0))
+                .toUri();
+        List<ResourceId> body = new ArrayList<>();
+        cardIds.forEach(cardId -> {
+            body.add(new ResourceId(cardId));
         });
 
-        return ResponseEntity.ok().body(body);
+        return ResponseEntity.created(location).body(body);
     }
 
     @PutMapping()
-    public ResponseEntity<IdResponseBody> updateCard(
+    public ResponseEntity<ResourceId> updateCard(
             @RequestBody @Valid UpdateCard updateCard,
             HttpServletRequest request) {
-            String userId = request.getHeader("userId");
-            String cardId = cardService.updateCard(updateCard, userId);
-            IdResponseBody body = new IdResponseBody(cardId);
-            
-            return ResponseEntity.ok().body(body);
+        String userId = request.getHeader("userId");
+        String cardId = cardService.updateCard(updateCard, userId);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(cardId)
+                .toUri();
+        ResourceId body = new ResourceId(cardId);
+
+        return ResponseEntity.created(location).body(body);
+    }
+
+    @PutMapping(value = "/save")
+    public ResponseEntity<ResourceId> addUserId(@RequestBody @Valid ResourceId resourceId, HttpServletRequest request) {
+        String userId = request.getHeader("userId");
+        String cardId = resourceId.getId();
+        if(userId == null || userId.isEmpty()) {
+            throw new MissingUserIdHeaderException();
+        }
+        if(!isValidId(userId)) {
+            throw new InvalidIdException(userId);
+        }
+        cardId = cardService.addUserId(userId, cardId);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .replacePath("/cards/{id}")
+                .buildAndExpand(cardId)
+                .toUri();
+        ResourceId body = new ResourceId(cardId);
+
+        return ResponseEntity.created(location).body(body);
     }
 }

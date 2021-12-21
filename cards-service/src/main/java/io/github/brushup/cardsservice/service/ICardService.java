@@ -12,4 +12,6 @@ public interface ICardService {
     List<String> saveCards(List<SaveCard> cards, String userId);
 
     String updateCard(UpdateCard updateCard, String userId);
+
+    String addUserId(String userId, String cardId);
 }

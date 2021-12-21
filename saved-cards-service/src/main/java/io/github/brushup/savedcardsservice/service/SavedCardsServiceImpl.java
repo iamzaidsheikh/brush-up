@@ -13,6 +13,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import io.github.brushup.savedcardsservice.dao.SavedCardsDao;
 import io.github.brushup.savedcardsservice.entitiy.SavedCards;
 import io.github.brushup.savedcardsservice.exceptions.NoSavedCardsFoundException;
+import io.github.brushup.savedcardsservice.utils.ResourceId;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,16 +44,31 @@ public class SavedCardsServiceImpl implements ISavedCardsService {
         cardIds.forEach(cardId -> {
             if (!savedCardIds.contains(cardId)) {
                 try {
-                    ResponseEntity<Void> response = webClientBuilder.build()
+                    ResponseEntity<Void> getCardResponse = webClientBuilder.build()
                             .get()
                             .uri("http://cards-service/cards/" + cardId)
                             .retrieve()
                             .toBodilessEntity()
                             .block();
-                    if (response.getStatusCode().equals(HttpStatus.OK)) {
-                        savedCardIds.add(cardId);
-                        cardsAdded.add(cardId);
-                        log.info("Card {} saved", cardId);
+                    if (getCardResponse.getStatusCode().equals(HttpStatus.OK)) {
+                        try {
+                            ResponseEntity<Void> addUserResponse = webClientBuilder.build()
+                                    .put()
+                                    .uri("http://cards-service/cards/save")
+                                    .header("userId", userId)
+                                    .bodyValue(new ResourceId(cardId))
+                                    .retrieve()
+                                    .toBodilessEntity()
+                                    .block();
+                            if (addUserResponse.getStatusCode().equals(HttpStatus.CREATED)) {
+                                savedCardIds.add(cardId);
+                                cardsAdded.add(cardId);
+                                log.info("Card {} saved", cardId);
+                            }
+                        } catch (WebClientResponseException e) {
+                            log.error("Something went wrong. Could not add user to card");
+                        }
+
                     }
                 } catch (WebClientResponseException e) {
                     if (e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
@@ -61,7 +77,7 @@ public class SavedCardsServiceImpl implements ISavedCardsService {
                         log.error("Something went wrong. Could not verify card id");
                     }
                 }
-            }else {
+            } else {
                 log.info("Card {} is already saved", cardId);
             }
             sc.setSavedCards(savedCardIds);
