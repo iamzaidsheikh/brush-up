@@ -25,5 +25,5 @@ public class Card {
 
     private Instant dateCreated;
 
-    private List<UserUDT> savedBy;
+    private List<String> savedBy;
 }
