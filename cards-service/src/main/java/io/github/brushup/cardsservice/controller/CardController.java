@@ -70,6 +70,12 @@ public class CardController {
             @RequestBody @NotEmpty(message = "List of cards cannot be empty.") List<@Valid SaveCard> cards,
             HttpServletRequest request) {
         String userId = request.getHeader("userId");
+        if(userId == null || userId.isEmpty()) {
+            throw new MissingUserIdHeaderException();
+        }
+        if(!isValidId(userId)) {
+            throw new InvalidIdException(userId);
+        }
         List<String> cardIds = cardService.saveCards(cards, userId);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -89,6 +95,12 @@ public class CardController {
             @RequestBody @Valid UpdateCard updateCard,
             HttpServletRequest request) {
         String userId = request.getHeader("userId");
+        if(userId == null || userId.isEmpty()) {
+            throw new MissingUserIdHeaderException();
+        }
+        if(!isValidId(userId)) {
+            throw new InvalidIdException(userId);
+        }
         String cardId = cardService.updateCard(updateCard, userId);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
