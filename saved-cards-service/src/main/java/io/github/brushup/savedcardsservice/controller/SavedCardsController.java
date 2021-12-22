@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.github.brushup.savedcardsservice.entitiy.SavedCards;
 import io.github.brushup.savedcardsservice.exceptions.EmptyListException;
 import io.github.brushup.savedcardsservice.exceptions.InvalidIdException;
+import io.github.brushup.savedcardsservice.exceptions.MissingUserIdHeaderException;
 import io.github.brushup.savedcardsservice.service.ISavedCardsService;
 import io.github.brushup.savedcardsservice.utils.CardIds;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,9 @@ public class SavedCardsController {
     @GetMapping
     public ResponseEntity<SavedCards> getSavedCards(HttpServletRequest request) {
         String userId = request.getHeader("userId");
+        if(userId == null || userId.isEmpty()) {
+            throw new MissingUserIdHeaderException();
+        }
         if(!isValidId(userId)) {
             throw new InvalidIdException(userId);
         }
@@ -53,6 +57,9 @@ public class SavedCardsController {
     @PutMapping
     public ResponseEntity<CardIds> addCards(@RequestBody List<String> cardIds, HttpServletRequest request) {
         String userId = request.getHeader("userId");
+        if(userId == null || userId.isEmpty()) {
+            throw new MissingUserIdHeaderException();
+        }
         if(!isValidId(userId)) {
             throw new InvalidIdException(userId);
         }
@@ -68,6 +75,9 @@ public class SavedCardsController {
     @DeleteMapping
     public ResponseEntity<CardIds> removeCards(@RequestBody List<String> cardIds, HttpServletRequest request) {
         String userId = request.getHeader("userId");
+        if(userId == null || userId.isEmpty()) {
+            throw new MissingUserIdHeaderException();
+        }
         if(!isValidId(userId)) {
             throw new InvalidIdException(userId);
         }
@@ -83,6 +93,9 @@ public class SavedCardsController {
     @DeleteMapping(value = "/clear")
     public ResponseEntity<CardIds> removeAll(HttpServletRequest request) {
         String userId = request.getHeader("userId");
+        if(userId == null || userId.isEmpty()) {
+            throw new MissingUserIdHeaderException();
+        }
         if(!isValidId(userId)) {
             throw new InvalidIdException(userId);
         }

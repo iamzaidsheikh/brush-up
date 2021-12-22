@@ -25,4 +25,10 @@ public class ExceptionController {
         APIError error = new APIError(HttpStatus.BAD_REQUEST, "List of card ids cannot be empty", e);
         return new ResponseEntity<>(error, error.getStatus());
     }
+
+    @ExceptionHandler(value = MissingUserIdHeaderException.class)
+    public ResponseEntity<APIError> handle(MissingUserIdHeaderException e) {
+        APIError error = new APIError(HttpStatus.BAD_REQUEST, "User id header is missing", e);
+        return new ResponseEntity<>(error, error.getStatus());
+    }
 }
