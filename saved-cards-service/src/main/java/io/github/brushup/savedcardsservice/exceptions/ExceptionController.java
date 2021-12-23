@@ -31,4 +31,10 @@ public class ExceptionController {
         APIError error = new APIError(HttpStatus.BAD_REQUEST, "User id header is missing", e);
         return new ResponseEntity<>(error, error.getStatus());
     }
+
+    @ExceptionHandler(value = CardIsNotSavedException.class)
+    public ResponseEntity<APIError> handle(CardIsNotSavedException e) {
+        APIError error = new APIError(HttpStatus.BAD_REQUEST, "Card is not saved", e);
+        return new ResponseEntity<>(error, error.getStatus());
+    }
 }
