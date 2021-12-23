@@ -12,6 +12,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import io.github.brushup.savedcardsservice.dao.SavedCardsDao;
 import io.github.brushup.savedcardsservice.entitiy.SavedCards;
+import io.github.brushup.savedcardsservice.exceptions.CardIsNotSavedException;
 import io.github.brushup.savedcardsservice.exceptions.NoSavedCardsFoundException;
 import io.github.brushup.savedcardsservice.utils.ResourceId;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +47,7 @@ public class SavedCardsServiceImpl implements ISavedCardsService {
                 try {
                     ResponseEntity<Void> getCardResponse = webClientBuilder.build()
                             .get()
-                            .uri("http://cards-service/cards/" + cardId)
+                            .uri("http://cards-service/" + cardId)
                             .retrieve()
                             .toBodilessEntity()
                             .block();
@@ -54,7 +55,7 @@ public class SavedCardsServiceImpl implements ISavedCardsService {
                         try {
                             ResponseEntity<Void> addUserResponse = webClientBuilder.build()
                                     .put()
-                                    .uri("http://cards-service/cards/save")
+                                    .uri("http://cards-service/save")
                                     .header("userId", userId)
                                     .bodyValue(new ResourceId(cardId))
                                     .retrieve()
@@ -88,32 +89,24 @@ public class SavedCardsServiceImpl implements ISavedCardsService {
     }
 
     @Override
-    public List<String> removeCards(List<String> cardIds, String userId) {
+    public void removeCard(String cardId, String userId) {
         SavedCards sc = getCards(userId);
-        List<String> savedCardIds = sc.getSavedCards();
-        List<String> removedCards = new ArrayList<>();
-        cardIds.forEach(cardId -> {
-            if (savedCardIds.contains(cardId)) {
-                savedCardIds.remove(cardId);
-                removedCards.add(cardId);
-                log.info("Card {} removed", cardId);
-            } else {
-                log.info("Card {} is not saved", cardId);
-            }
-            sc.setSavedCards(savedCardIds);
-            dao.update(sc);
-        });
-
-        return removedCards;
+        List<String> savedCards = sc.getSavedCards();
+        if (savedCards.contains(cardId)) {
+            savedCards.remove(cardId);
+            log.info("Card {} removed", cardId);
+        } else {
+            throw new CardIsNotSavedException(cardId);
+        }
+        sc.setSavedCards(savedCards);
+        dao.update(sc);
     }
 
     @Override
-    public String removeAll(String userId) {
+    public void removeAll(String userId) {
         SavedCards sc = getCards(userId);
         sc.getSavedCards().clear();
-        log.info("Cards removed for user {}", userId);
+        log.info("Removed all saved cards for user {}", userId);
         dao.update(sc);
-
-        return userId;
     }
 }

@@ -10,7 +10,7 @@ public interface ISavedCardsService {
 
     List<String> addCards(List<String> cardIds, String userId);
 
-    List<String> removeCards(List<String> cardIds, String userId);
+    void removeCard(String cardId, String userId);
 
-    String removeAll(String userId);
+    void removeAll(String userId);
 }
