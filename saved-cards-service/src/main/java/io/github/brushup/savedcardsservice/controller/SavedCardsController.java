@@ -1,6 +1,6 @@
 package io.github.brushup.savedcardsservice.controller;
 
-import java.util.ArrayList;
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,10 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import io.github.brushup.savedcardsservice.entitiy.SavedCards;
 import io.github.brushup.savedcardsservice.exceptions.EmptyListException;
@@ -23,7 +24,6 @@ import io.github.brushup.savedcardsservice.utils.CardIds;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/cards/saved")
 @RequiredArgsConstructor
 public class SavedCardsController {
     
@@ -68,12 +68,16 @@ public class SavedCardsController {
         }
         List<String> cardsAdded = savedCardsService.addCards(cardIds, userId);
         CardIds body = new CardIds(cardsAdded);
+        URI location = ServletUriComponentsBuilder
+        .fromCurrentRequest()
+        .buildAndExpand(userId)
+        .toUri();
         
-        return ResponseEntity.ok(body);
+        return ResponseEntity.created(location).body(body);
     }
 
-    @DeleteMapping
-    public ResponseEntity<CardIds> removeCards(@RequestBody List<String> cardIds, HttpServletRequest request) {
+    @DeleteMapping(value = "/{cardId}")
+    public ResponseEntity<Void> removeCard(@PathVariable String cardId, HttpServletRequest request) {
         String userId = request.getHeader("userId");
         if(userId == null || userId.isEmpty()) {
             throw new MissingUserIdHeaderException();
@@ -81,17 +85,16 @@ public class SavedCardsController {
         if(!isValidId(userId)) {
             throw new InvalidIdException(userId);
         }
-        if(cardIds.isEmpty()){
-            throw new EmptyListException();
+        if(!isValidId(cardId)){
+            throw new InvalidIdException(cardId);
         }
-        List<String> cardsRemoved = savedCardsService.removeCards(cardIds, userId);
-        CardIds body = new CardIds(cardsRemoved);
+        savedCardsService.removeCard(cardId, userId);
         
-        return ResponseEntity.ok(body);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping(value = "/clear")
-    public ResponseEntity<CardIds> removeAll(HttpServletRequest request) {
+    public ResponseEntity<Void> removeAll(HttpServletRequest request) {
         String userId = request.getHeader("userId");
         if(userId == null || userId.isEmpty()) {
             throw new MissingUserIdHeaderException();
@@ -100,6 +103,7 @@ public class SavedCardsController {
             throw new InvalidIdException(userId);
         }
         savedCardsService.removeAll(userId);
-        return ResponseEntity.ok(new CardIds(new ArrayList<>()));
+
+        return ResponseEntity.noContent().build();
     }
 }
