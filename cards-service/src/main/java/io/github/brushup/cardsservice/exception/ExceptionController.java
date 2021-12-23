@@ -71,4 +71,10 @@ public class ExceptionController {
         APIError error = new APIError(HttpStatus.BAD_REQUEST, "User id header is missing", e);
         return new ResponseEntity<>(error, error.getStatus());
     }
+
+    @ExceptionHandler(value = UnauthorizedUserException.class)
+    public ResponseEntity<APIError> handle(UnauthorizedUserException e) {
+        APIError error = new APIError(HttpStatus.UNAUTHORIZED, "Unauthorized user", e);
+        return new ResponseEntity<>(error, error.getStatus());
+    }
 }
