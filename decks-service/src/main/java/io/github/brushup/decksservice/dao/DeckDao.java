@@ -1,7 +1,6 @@
 package io.github.brushup.decksservice.dao;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import com.datastax.oss.driver.api.mapper.annotations.Dao;
 import com.datastax.oss.driver.api.mapper.annotations.Delete;
@@ -15,7 +14,7 @@ import io.github.brushup.decksservice.entity.Deck;
 public interface DeckDao {
     
     @Select
-    Optional<Deck> findById(UUID id);
+    Optional<Deck> findById(String id);
 
     @Insert
     void save(Deck deck);

@@ -1,7 +1,5 @@
 package io.github.brushup.decksservice.entity;
 
-import java.util.UUID;
-
 import com.datastax.oss.driver.api.mapper.annotations.Entity;
 
 import lombok.Data;
@@ -10,7 +8,7 @@ import lombok.Data;
 @Data
 public class UserUDT {
     
-    private UUID id;
+    private String id;
 
     private String username;
 
